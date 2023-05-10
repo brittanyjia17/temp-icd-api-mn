@@ -15,7 +15,7 @@ def preview():
     result = top10rows.to_json(orient="records")
     return result
 
-@app.route('/county_code/<value>', methods=['GET'])
+@app.route('/county_code/<int:value>', methods=['GET'])
 def icdcode(value):
     print ('value: ' , value)
     filtered = df[df['county_code'] == value]
@@ -24,12 +24,11 @@ def icdcode(value):
     else:
         return filtered.to_json(orient="records")
 
-@app.route('/county_code/<value>/sex/<value2>')
+@app.route('/county_code/<int:value>/sex/<string:value2>')
 def icdcode2(value, value2): 
-    valueNumber = int(value)
-    filtered = df[df['county_code'] == valueNumber]
-    filtered2 = filtered[filtered['sex'] == value2]
-    if len(filtered) <= 0:
+    filtered = df[df['county_code'] == value]
+    filtered2 = filtered[filtered['sex'].str.lower() == value2.lower()]
+    if len(filtered2) <= 0:
         return 'There is nothing here'
     else:
         return filtered2.to_json(orient="records")
